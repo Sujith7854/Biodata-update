@@ -1,90 +1,126 @@
 import React, { useState } from "react";
 
 const EditApplicationModal = ({ application, onClose, onSave }) => {
-  const [applicationData, setApplicationData] = useState(() => ({
-    ...application,
-    date_of_birth: application.date_of_birth?.split("T")[0] || "", // ✅ Fix for date input
-  }));
-  const [mainPhotoFile, setMainPhotoFile] = useState(null);
-  const [sidePhotoFile, setSidePhotoFile] = useState(null);
+  const [formData, setFormData] = useState({ ...application });
+  const [mainPhoto, setMainPhoto] = useState(null);
+  const [sidePhoto, setSidePhoto] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setApplicationData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave(applicationData, {
-      main_photo: mainPhotoFile,
-      side_photo: sidePhotoFile,
-    });
+  const handleFileChange = (e, setter) => {
+    setter(e.target.files[0]);
+  };
+
+  const handleSubmit = () => {
+    const photoFiles = {
+      main_photo: mainPhoto,
+      side_photo: sidePhoto,
+    };
+    onSave(formData, photoFiles);
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-start z-50 overflow-y-scroll py-8">
-      <div className="bg-white p-6 rounded-lg w-full max-w-4xl">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
+      <div className="bg-white rounded-lg shadow-lg max-w-3xl w-full p-6 overflow-y-auto max-h-[90vh]">
         <h2 className="text-xl font-bold mb-4">Edit Application</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <input name="name" value={applicationData.name} onChange={handleChange} className="border p-2" placeholder="Name" />
-            <input name="date_of_birth" value={applicationData.date_of_birth} onChange={handleChange} type="date" className="border p-2" />
-            <input name="time_of_birth" value={applicationData.time_of_birth} onChange={handleChange} className="border p-2" placeholder="Time of Birth" />
-            <input name="place_of_birth" value={applicationData.place_of_birth} onChange={handleChange} className="border p-2" placeholder="Place of Birth" />
-            <input name="height" value={applicationData.height} onChange={handleChange} className="border p-2" placeholder="Height" />
-            <input name="birth_star" value={applicationData.birth_star} onChange={handleChange} className="border p-2" placeholder="Birth Star" />
-            <input name="zodiac_sign" value={applicationData.zodiac_sign} onChange={handleChange} className="border p-2" placeholder="Zodiac Sign" />
-            <input name="gothram" value={applicationData.gothram} onChange={handleChange} className="border p-2" placeholder="Gothram" />
-            <input name="current_living" value={applicationData.current_living} onChange={handleChange} className="border p-2" placeholder="Current Living" />
-            <input name="educational_details" value={applicationData.educational_details} onChange={handleChange} className="border p-2" placeholder="Education" />
-            <input name="designation" value={applicationData.designation} onChange={handleChange} className="border p-2" placeholder="Designation" />
-            <input name="company" value={applicationData.company} onChange={handleChange} className="border p-2" placeholder="Company" />
-            <input name="previous_work_experience" value={applicationData.previous_work_experience} onChange={handleChange} className="border p-2" placeholder="Previous Work" />
-            <input name="fathers_name" value={applicationData.fathers_name} onChange={handleChange} className="border p-2" placeholder="Father's Name" />
-            <input name="fathers_father_name" value={applicationData.fathers_father_name} onChange={handleChange} className="border p-2" placeholder="Father's Father Name" />
-            <input name="mothers_name" value={applicationData.mothers_name} onChange={handleChange} className="border p-2" placeholder="Mother's Name" />
-            <input name="mothers_father_name" value={applicationData.mothers_father_name} onChange={handleChange} className="border p-2" placeholder="Mother's Father Name" />
-            <input name="siblings" value={applicationData.siblings} onChange={handleChange} className="border p-2" placeholder="Siblings" />
-            <input name="email_id" value={applicationData.email_id} onChange={handleChange} type="email" className="border p-2" placeholder="Email ID" />
-            <input name="contact_no1" value={applicationData.contact_no1} onChange={handleChange} className="border p-2" placeholder="Contact No 1" />
-            <input name="contact_no2" value={applicationData.contact_no2} onChange={handleChange} className="border p-2" placeholder="Contact No 2" />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name || ""}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm font-semibold mb-1">Current Main Photo:</p>
-              {applicationData.main_photo_url && (
-                <img
-                  src={`http://localhost:5050/uploads/${applicationData.main_photo_url}`}
-                  alt="Main"
-                  className="w-40 h-40 object-cover border"
-                />
-              )}
-              <input type="file" onChange={(e) => setMainPhotoFile(e.target.files[0])} className="mt-2" />
+          {/* Gender */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Gender</label>
+            <select
+              name="gender"
+              value={formData.gender || ""}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            >
+              <option value="">-- Select Gender --</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+
+          {[
+            "date_of_birth",
+            "time_of_birth",
+            "place_of_birth",
+            "height",
+            "birth_star",
+            "zodiac_sign",
+            "gothram",
+            "current_living",
+            "educational_details",
+            "designation",
+            "company",
+            "previous_work_experience",
+            "fathers_name",
+            "fathers_father_name",
+            "mothers_name",
+            "mothers_father_name",
+            "siblings",
+            "email_id",
+            "contact_no1",
+            "contact_no2",
+          ].map((field) => (
+            <div key={field}>
+              <label className="block text-sm font-medium text-gray-700 capitalize">
+                {field.replace(/_/g, " ")}
+              </label>
+              <input
+                type={field.includes("date") ? "date" : field.includes("time") ? "time" : "text"}
+                name={field}
+                value={formData[field] || ""}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
             </div>
+          ))}
 
-            <div>
-              <p className="text-sm font-semibold mb-1">Current Side Photo:</p>
-              {applicationData.side_photo_url && (
-                <img
-                  src={`http://localhost:5050/uploads/${applicationData.side_photo_url}`}
-                  alt="Side"
-                  className="w-40 h-40 object-cover border"
-                />
-              )}
-              <input type="file" onChange={(e) => setSidePhotoFile(e.target.files[0])} className="mt-2" />
-            </div>
+          {/* Main Photo Upload */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Main Photo</label>
+            <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setMainPhoto)} />
           </div>
 
-          <div className="flex justify-end space-x-4 pt-4">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-500 text-white rounded">
-              Cancel
-            </button>
-            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">
-              Save Changes
-            </button>
+          {/* Side Photo Upload */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Side Photo</label>
+            <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setSidePhoto)} />
           </div>
-        </form>
+        </div>
+
+        <div className="mt-6 flex justify-end gap-3">
+          <button
+            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          <button
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            onClick={handleSubmit}
+          >
+            Save Changes
+          </button>
+        </div>
       </div>
     </div>
   );

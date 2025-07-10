@@ -1,41 +1,68 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const BrowseApplications = () => {
-  const [years, setYears] = useState([]);
-  const navigate = useNavigate(); // ✅ Add navigate
+  const [data, setData] = useState({});
+  const { gender } = useParams(); // ← read gender from URL
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5050/api/grouped-by-year")
+    fetch("http://localhost:5050/api/grouped-by-gender")
       .then((res) => res.json())
-      .then((data) => {
-        if (data.success) setYears(data.years);
+      .then((res) => {
+        if (res.success) setData(res.data);
       });
   }, []);
 
+  const genders = Object.keys(data);
+
   return (
     <div className="min-h-screen bg-blue-50 py-10 px-4">
-      {/* ✅ Back Button */}
-      <button
-        onClick={() => navigate("/")}
-        className="mb-4 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
-      >
-        ← Back
-      </button>
-
-      <h1 className="text-3xl font-bold text-center mb-6">Browse Applications</h1>
       <div className="max-w-2xl mx-auto bg-white shadow rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">Available Years:</h2>
-        {years.map((item) => (
-          <Link key={item.year} to={`/browse/${item.year}`}>
-            <div className="flex justify-between items-center bg-blue-100 hover:bg-blue-200 p-4 rounded mb-2 cursor-pointer">
-              <span className="text-blue-800 font-medium">{item.year}</span>
-              <span className="bg-blue-300 text-blue-900 px-3 py-1 rounded-full text-sm">
-                {item.count} application{item.count > 1 ? "s" : ""}
-              </span>
+        {!gender ? (
+          <>
+          <button
+              className="mb-4 text-sm text-blue-600 hover:underline"
+              onClick={() => navigate("/home")}
+            >
+              ← Back
+            </button>
+            <h2 className="text-xl font-semibold mb-4 text-center">Select Gender</h2>
+            <div className="flex justify-center gap-6">
+              {genders.map((g) => (
+                <button
+                  key={g}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full"
+                  onClick={() => navigate(`/browse/${g}`)}
+                >
+                  {g}
+                </button>
+              ))}
             </div>
-          </Link>
-        ))}
+          </>
+        ) : (
+          <>
+            <button
+              className="mb-4 text-sm text-blue-600 hover:underline"
+              onClick={() => navigate("/browse")}
+            >
+              ← Back to Gender Selection
+            </button>
+            <h2 className="text-xl font-semibold mb-4 text-center">
+              {gender} Applications by Birth Year
+            </h2>
+            {data[gender]?.map(({ year, count }) => (
+              <Link key={year} to={`/browse/${gender}/${year}`}>
+                <div className="flex justify-between items-center bg-blue-100 hover:bg-blue-200 p-4 rounded mb-2 cursor-pointer">
+                  <span className="text-blue-800 font-medium">{year}</span>
+                  <span className="bg-blue-300 text-blue-900 px-3 py-1 rounded-full text-sm">
+                    {count} application{count > 1 ? "s" : ""}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

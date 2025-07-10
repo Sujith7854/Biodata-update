@@ -6,6 +6,7 @@ const BiodataForm = () => {
 
   const [formData, setFormData] = useState({
     name: "",
+    gender: "", // ✅ New gender field
     date_of_birth: "",
     time_of_birth: "",
     place_of_birth: "",
@@ -41,7 +42,7 @@ const BiodataForm = () => {
     }
 
     if (countdown === 0 && showPopup) {
-      navigate("/");
+      navigate("/home");
     }
   }, [countdown, showPopup, navigate]);
 
@@ -99,25 +100,56 @@ const BiodataForm = () => {
     return "text";
   };
 
+  const formFields = [
+    "name",
+    "date_of_birth", "time_of_birth", "place_of_birth", "height",
+    "birth_star", "zodiac_sign", "gothram", "current_living", "educational_details",
+    "designation", "company", "previous_work_experience",
+    "fathers_name", "fathers_father_name", "mothers_name", "mothers_father_name",
+    "siblings", "email_id", "contact_no1", "contact_no2",
+  ];
+
   return (
     <div className="relative max-w-3xl mx-auto p-6 bg-white shadow rounded-lg mt-10">
-      {/* ⬅️ Back Button */}
+      <h2 className="text-2xl font-bold mb-6">Biodata Form</h2>
       <button
-        onClick={() => navigate("/")}
-        className="absolute top-4 left-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded"
-      >
-        ← Back
-      </button>
-
-      <h2 className="text-2xl font-bold mb-6 text-center">Biodata Form</h2>
-
+              className="mb-4 text-sm text-blue-600 hover:underline"
+              onClick={() => navigate("/home")}
+            >
+              ← Back
+            </button>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {[
-          "name", "date_of_birth", "time_of_birth", "place_of_birth", "height",
-          "birth_star", "zodiac_sign", "gothram", "current_living", "educational_details",
-          "designation", "company", "previous_work_experience", "fathers_name", "fathers_father_name",
-          "mothers_name", "mothers_father_name", "siblings", "email_id", "contact_no1", "contact_no2"
-        ].map((field) => (
+        {/* Name Field */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Name</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          />
+        </div>
+
+        {/* Gender Field */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Gender</label>
+          <select
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          >
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+
+        {/* Remaining Fields */}
+        {formFields.slice(1).map((field) => (
           <div key={field}>
             <label className="block text-sm font-medium text-gray-700 capitalize">
               {field.replace(/_/g, " ")}
@@ -133,6 +165,7 @@ const BiodataForm = () => {
           </div>
         ))}
 
+        {/* Image Uploads */}
         <div>
           <label className="block text-sm font-medium text-gray-700">Main Photo</label>
           <input

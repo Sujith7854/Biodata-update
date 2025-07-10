@@ -14,7 +14,7 @@ if (!fs.existsSync(uploadsDir)) {
 const savePhoto = (base64, filename) => {
   const filePath = path.join(uploadsDir, filename);
   fs.writeFileSync(filePath, Buffer.from(base64, "base64"));
-  return filename; // ✅ return only filename
+  return filename; // return only the filename
 };
 
 // ────────────────────────────────
@@ -24,6 +24,7 @@ router.post("/submit-application", async (req, res) => {
   try {
     const {
       name,
+      gender,
       date_of_birth,
       time_of_birth,
       place_of_birth,
@@ -63,16 +64,17 @@ router.post("/submit-application", async (req, res) => {
 
     await db.execute(
       `INSERT INTO applications (
-        unique_id, name, date_of_birth, time_of_birth, place_of_birth,
+        unique_id, name, gender, date_of_birth, time_of_birth, place_of_birth,
         height, birth_star, zodiac_sign, gothram, current_living,
         educational_details, designation, company, previous_work_experience,
         fathers_name, fathers_father_name, mothers_name, mothers_father_name,
         siblings, email_id, contact_no1, contact_no2,
         main_photo_url, side_photo_url
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         unique_id,
         name,
+        gender,
         date_of_birth,
         time_of_birth,
         place_of_birth,
@@ -106,21 +108,27 @@ router.post("/submit-application", async (req, res) => {
 });
 
 // ────────────────────────────────
-// Get approved applications grouped by year
+// Group approved applications by gender, then year
 // ────────────────────────────────
-router.get("/grouped-by-year", async (req, res) => {
+router.get("/grouped-by-gender", async (req, res) => {
   try {
     const [rows] = await db.execute(`
-      SELECT YEAR(date_of_birth) AS year, COUNT(*) AS count
+      SELECT gender, YEAR(date_of_birth) AS year, COUNT(*) AS count
       FROM applications
       WHERE approved_at IS NOT NULL
-      GROUP BY year
-      ORDER BY year DESC
+      GROUP BY gender, year
+      ORDER BY gender ASC, year DESC
     `);
 
-    res.json({ success: true, years: rows });
+    const result = {};
+    rows.forEach(({ gender, year, count }) => {
+      if (!result[gender]) result[gender] = [];
+      result[gender].push({ year, count });
+    });
+
+    res.json({ success: true, data: result });
   } catch (error) {
-    console.error("Error grouping applications by year:", error);
+    console.error("Error grouping applications by gender and year:", error);
     res.status(500).json({ success: false, error: "Internal server error" });
   }
 });

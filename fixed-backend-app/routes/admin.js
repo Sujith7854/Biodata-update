@@ -160,4 +160,91 @@ router.delete("/application/:unique_id", async (req, res) => {
   }
 });
 
+// Get all access requests
+router.get("/access-requests", async (req, res) => {
+  try {
+    const [results] = await db.query(
+      "SELECT * FROM access_requests ORDER BY created_at DESC"
+    );
+    res.json({ success: true, data: results });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false, message: "Error fetching access requests" });
+  }
+});
+
+// Update access request
+router.put("/access-request/:id", async (req, res) => {
+  const { id } = req.params;
+  const { full_name, country, state, city, phone_number } = req.body;
+
+  try {
+    await db.query(
+      "UPDATE access_requests SET full_name=?, country=?, state=?, city=?, phone_number=? WHERE id=?",
+      [full_name, country, state, city, phone_number, id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false, message: "Failed to update access request" });
+  }
+});
+
+// Delete access request
+router.delete("/access-request/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await db.query("DELETE FROM access_requests WHERE id=?", [id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false, message: "Failed to delete access request" });
+  }
+});
+
+// GET all verified users
+router.get("/verified-users", async (req, res) => {
+  try {
+    const [users] = await db.query(
+      "SELECT * FROM access_requests WHERE is_verified = 1 ORDER BY created_at DESC"
+    );
+    res.json({ success: true, users });
+  } catch (error) {
+    console.error("Error fetching verified users:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
+// PUT update verified user
+router.put("/verified-users/:id", async (req, res) => {
+  const { id } = req.params;
+  const { full_name, phone_number, country, state, city } = req.body;
+
+  try {
+    await db.query(
+      `UPDATE access_requests 
+       SET full_name = ?, phone_number = ?, country = ?, state = ?, city = ?
+       WHERE id = ?`,
+      [full_name, phone_number, country, state, city, id]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ success: false, message: "Internal error" });
+  }
+});
+
+// DELETE a verified user
+router.delete("/verified-users/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    await db.query("DELETE FROM access_requests WHERE id = ?", [id]);
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ success: false });
+  }
+});
+
 module.exports = router;
