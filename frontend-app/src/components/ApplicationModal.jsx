@@ -2,10 +2,11 @@ import React, { useState } from "react";
 
 const ApplicationModal = ({ application, onClose }) => {
   const [zoomedImage, setZoomedImage] = useState(null);
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const images = [
-    application.main_photo_url && `http://localhost:5050/uploads/${application.main_photo_url}`,
-    application.side_photo_url && `http://localhost:5050/uploads/${application.side_photo_url}`,
+    application.main_photo_url && `${BASE_URL}/uploads/${application.main_photo_url}`,
+    application.side_photo_url && `${BASE_URL}/uploads/${application.side_photo_url}`,
   ].filter(Boolean);
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);

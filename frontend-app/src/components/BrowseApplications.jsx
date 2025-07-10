@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
 const BrowseApplications = () => {
   const [data, setData] = useState({});
   const { gender } = useParams(); // ← read gender from URL
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5050/api/grouped-by-gender")
+    fetch(`${BASE_URL}/api/grouped-by-gender`)
       .then((res) => res.json())
       .then((res) => {
         if (res.success) setData(res.data);

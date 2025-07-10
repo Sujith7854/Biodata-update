@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const RegistrationForm = () => {
   const navigate = useNavigate();
 
@@ -80,7 +82,7 @@ const RegistrationForm = () => {
     try {
       const payload = { ...form, is_existing: isExistingUser };
 
-      const res = await fetch("http://localhost:5050/api/request-access", {
+      const res = await fetch(`${BASE_URL}/api/request-access`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
 const OTPVerification = () => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,7 +20,7 @@ const OTPVerification = () => {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5050/api/verify-otp", {
+      const res = await fetch(`${BASE_URL}/api/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone_number, otp }),

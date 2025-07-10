@@ -4,10 +4,11 @@ const AdminAccessRequests = () => {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [editedUser, setEditedUser] = useState({});
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const fetchVerifiedUsers = async () => {
     try {
-      const res = await fetch("http://localhost:5050/api/admin/verified-users");
+      const res = await fetch(`${BASE_URL}/api/admin/verified-users`);
       const data = await res.json();
       if (data.success && Array.isArray(data.users)) {
         setUsers(data.users);
@@ -25,14 +26,14 @@ const AdminAccessRequests = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    await fetch(`http://localhost:5050/api/admin/verified-users/${id}`, {
+    await fetch(`${BASE_URL}/api/admin/verified-users/${id}`, {
       method: "DELETE",
     });
     fetchVerifiedUsers();
   };
 
   const handleSave = async () => {
-    await fetch(`http://localhost:5050/api/admin/verified-users/${editedUser.id}`, {
+    await fetch(`${BASE_URL}/api/admin/verified-users/${editedUser.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editedUser),

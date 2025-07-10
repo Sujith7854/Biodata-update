@@ -2,14 +2,17 @@ import React, { useEffect, useState } from "react";
 import EditApplicationModal from "./EditApplicationModal";
 import ViewApplicationModal from "./ViewApplicationModal";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
 const AdminApplications = () => {
   const [applications, setApplications] = useState([]);
   const [editingApplication, setEditingApplication] = useState(null);
   const [viewingApplication, setViewingApplication] = useState(null);
 
-  const fetchApplications = async () => {
+  const fetchVerifiedUsers = async () => {
     try {
-      const res = await fetch("http://localhost:5050/api/admin/applications");
+      const res = await fetch(`${BASE_URL}/api/admin/applications`);
       const data = await res.json();
       if (data.success) {
         setApplications(data.applications);
@@ -29,7 +32,7 @@ const AdminApplications = () => {
   };
 
   const handleApprove = async (unique_id) => {
-    await fetch(`http://localhost:5050/api/admin/approve/${unique_id}`, {
+    await ffetch(`${BASE_URL}/api/admin/approve/${unique_id}`, {
       method: "POST",
     });
     await logAdminAction("approve", unique_id);
@@ -38,7 +41,7 @@ const AdminApplications = () => {
   };
 
   const handleReject = async (unique_id) => {
-    await fetch(`http://localhost:5050/api/admin/reject/${unique_id}`, {
+    await fetch(`${BASE_URL}/api/admin/reject/${unique_id}`, {
       method: "POST",
     });
     await logAdminAction("reject", unique_id);
@@ -47,7 +50,7 @@ const AdminApplications = () => {
   };
 
   const handleDelete = async (unique_id) => {
-    await fetch(`http://localhost:5050/api/admin/application/${unique_id}`, {
+    await fetch(`${BASE_URL}/api/admin/application/${unique_id}`, {
       method: "DELETE",
     });
     await logAdminAction("delete", unique_id);
@@ -68,8 +71,7 @@ const AdminApplications = () => {
         formData.append("side_photo", photoFiles.side_photo);
       }
 
-      const response = await fetch(
-        `http://localhost:5050/api/admin/application/${updatedData.unique_id}`,
+      const response = await fetch(`${BASE_URL}/api/admin/application/${updatedData.unique_id}`,
         {
           method: "PUT",
           body: formData,
@@ -91,7 +93,7 @@ const AdminApplications = () => {
   };
 
   const logAdminAction = async (action, unique_id) => {
-    await fetch("http://localhost:5050/api/admin/log-action", {
+    await fetch(`${BASE_URL}/api/admin/log-action`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

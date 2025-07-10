@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ViewApplicationModal from "./ViewApplicationModal";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
 const BrowseByYear = () => {
   const { gender, year, id } = useParams();
   const navigate = useNavigate();
@@ -10,7 +13,7 @@ const BrowseByYear = () => {
   const [selectedApplication, setSelectedApplication] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:5050/api/applications/by-year/${year}`)
+    fetch(`${BASE_URL}/api/applications/by-year/${year}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setApplications(data.applications);
