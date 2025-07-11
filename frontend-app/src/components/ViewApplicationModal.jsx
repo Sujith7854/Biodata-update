@@ -5,6 +5,8 @@ const ViewApplicationModal = ({ application, onClose, onApprove, onReject }) => 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const imageRef = useRef(null);
   const touchStartX = useRef(null);
+   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
   if (!application) return null;
 
@@ -128,7 +130,7 @@ const ViewApplicationModal = ({ application, onClose, onApprove, onReject }) => 
                 <div key={index} className="text-center">
                   <p className="font-semibold mb-1">{img.label}</p>
                   <img
-                    src={`http://localhost:5050/uploads/${img.src}`}
+                    src={`${BASE_URL}/uploads/${img.src}`}
                     alt={img.label}
                     className="w-full h-auto max-h-[160px] object-cover rounded cursor-pointer hover:scale-[1.02] transition"
                     onClick={() => openImageModal(index)}
@@ -208,7 +210,7 @@ const ViewApplicationModal = ({ application, onClose, onApprove, onReject }) => 
 
           <img
             ref={imageRef}
-            src={`http://localhost:5050/uploads/${images[currentImageIndex].src}`}
+            src={`${BASE_URL}/uploads/${images[currentImageIndex].src}`}
             alt="Preview"
             className="max-w-full max-h-[80vh] object-contain rounded shadow-xl transition"
           />

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import EditApplicationModal from "./EditApplicationModal";
 import ViewApplicationModal from "./ViewApplicationModal";
 
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
@@ -10,7 +11,7 @@ const AdminApplications = () => {
   const [editingApplication, setEditingApplication] = useState(null);
   const [viewingApplication, setViewingApplication] = useState(null);
 
-  const fetchVerifiedUsers = async () => {
+  const fetchApplications = async () => {
     try {
       const res = await fetch(`${BASE_URL}/api/admin/applications`);
       const data = await res.json();
@@ -32,7 +33,7 @@ const AdminApplications = () => {
   };
 
   const handleApprove = async (unique_id) => {
-    await ffetch(`${BASE_URL}/api/admin/approve/${unique_id}`, {
+    await fetch(`${BASE_URL}/api/admin/approve/${unique_id}`, {
       method: "POST",
     });
     await logAdminAction("approve", unique_id);

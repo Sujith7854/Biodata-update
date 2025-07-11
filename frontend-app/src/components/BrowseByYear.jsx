@@ -103,7 +103,7 @@ const BrowseByYear = () => {
                 <div className="flex-1 text-center">
                   <p className="text-sm font-semibold mb-2">Main Photo</p>
                   <img
-                    src={`http://localhost:5050/uploads/${app.main_photo_url}`}
+                    src={`${BASE_URL}/uploads/${app.main_photo_url}`}
   alt="Main"
   className="w-full h-[180px] object-contain border rounded"
                   />
@@ -113,7 +113,7 @@ const BrowseByYear = () => {
                 <div className="flex-1 text-center">
                   <p className="text-sm font-semibold mb-2">Side Photo</p>
                   <img
-                     src={`http://localhost:5050/uploads/${app.side_photo_url}`}
+                     src={`${BASE_URL}/uploads/${app.side_photo_url}`}
   alt="Side"
   className="w-full h-[180px] object-contain border rounded"
                   />
