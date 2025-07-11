@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-
 const OTPVerification = () => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,18 +19,28 @@ const OTPVerification = () => {
     setError("");
 
     try {
-      const res = await fetch(`${BASE_URL}/api/verify-otp`, {
+      const res = await fetch(`${BASE_URL}/api/access/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone_number, otp }),
       });
 
-      const data = await res.json();
-      if (data.success) {
-        // ✅ FIXED: Set verification flag in localStorage
+      const contentType = res.headers.get("content-type");
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("❌ Server error (verify-otp):", text);
+        throw new Error(`Server returned ${res.status}`);
+      }
+
+      const data =
+        contentType && contentType.includes("application/json")
+          ? await res.json()
+          : null;
+
+      if (data?.success) {
         localStorage.setItem("is_verified", "true");
         alert("OTP verified! You can now browse applications.");
-        navigate("/home"); // or redirect to /home if that’s your main screen
+        navigate("/home");
       } else {
         setError("Invalid OTP. Please try again.");
       }

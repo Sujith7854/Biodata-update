@@ -15,7 +15,6 @@ const RegistrationForm = () => {
   });
 
   const [isExistingUser, setIsExistingUser] = useState(false);
-
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
@@ -82,7 +81,8 @@ const RegistrationForm = () => {
     try {
       const payload = { ...form, is_existing: isExistingUser };
 
-      const res = await fetch(`${BASE_URL}/api/request-access`, {
+      const res = await fetch(`${BASE_URL}/api/access/request-access`, {
+        // ✅ FIXED: correct path
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
