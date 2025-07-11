@@ -1,8 +1,9 @@
 require("dotenv").config();
-const mysql = require("mysql2/promise"); // ✅ Required import
+const mysql = require("mysql2/promise");
 
 const db = mysql.createPool({
-  host: process.env.DB_HOST, // ✅ Use correct keys
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT, // ✅ Add this line
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
