@@ -1,7 +1,10 @@
 const express = require("express");
 const cors = require("cors");
-
 const app = express();
+
+// Increase JSON and URL-encoded body size limit
+app.use(express.json({ limit: "10mb" })); // 🔼 JSON payload limit
+app.use(express.urlencoded({ extended: true, limit: "10mb" })); // 🔼 for form-data (non-file)
 
 // Whitelist of allowed origins
 const whitelist = [
