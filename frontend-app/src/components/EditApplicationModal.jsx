@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+const BASE_URL = "http://localhost:5050";
 
 const EditApplicationModal = ({ application, onClose, onSave }) => {
   const [formData, setFormData] = useState({ ...application });
@@ -15,6 +16,11 @@ const EditApplicationModal = ({ application, onClose, onSave }) => {
 
   const handleFileChange = (e, setter) => {
     setter(e.target.files[0]);
+  };
+
+  const handlePhotoUpload = (type) => {
+    // 🔁 Optional: implement immediate upload if needed
+    alert(`Uploading ${type} photo`);
   };
 
   const handleSubmit = () => {
@@ -58,9 +64,9 @@ const EditApplicationModal = ({ application, onClose, onSave }) => {
             </select>
           </div>
 
+          {/* Other Fields */}
           {[
             "date_of_birth",
-            "time_of_birth",
             "place_of_birth",
             "height",
             "birth_star",
@@ -77,36 +83,107 @@ const EditApplicationModal = ({ application, onClose, onSave }) => {
             "mothers_father_name",
             "siblings",
             "email_id",
-            "contact_no1",
-            "contact_no2",
+            "main_contact_number",
+            "alternative_contact_number",
           ].map((field) => (
-            <div key={field}>
-              <label className="block text-sm font-medium text-gray-700 capitalize">
-                {field.replace(/_/g, " ")}
-              </label>
-              <input
-                type={field.includes("date") ? "date" : field.includes("time") ? "time" : "text"}
-                name={field}
-                value={formData[field] || ""}
-                onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-          ))}
+  <div key={field}>
+    <label className="block text-sm font-medium text-gray-700 capitalize">
+      {field.replace(/_/g, " ")}
+    </label>
+    <input
+      type={
+        field.includes("date")
+          ? "date"
+          : field.includes("time")
+          ? "time"
+          : "text"
+      }
+      name={field}
+      value={
+        field === "date_of_birth"
+          ? formData[field]?.slice(0, 10) || ""
+          : formData[field] || ""
+      }
+      onChange={handleChange}
+      className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+    />
+  </div>
+))}
 
-          {/* Main Photo Upload */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Main Photo</label>
-            <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setMainPhoto)} />
-          </div>
 
-          {/* Side Photo Upload */}
+          {/* Time of Birth in 12hr format */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Side Photo</label>
-            <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setSidePhoto)} />
+            <label className="block text-sm font-medium text-gray-700">Time of Birth</label>
+            <input
+              type="time"
+              name="time_of_birth"
+              value={formData.time_of_birth || ""}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              step="60"
+            />
+            <p className="text-xs text-gray-500 mt-1">12hr format (with AM/PM) shown automatically by browser</p>
           </div>
         </div>
 
+        {/* 📷 Photo Upload Section */}
+        <div className="grid md:grid-cols-2 gap-6 mt-6">
+          {/* 🔷 Main Photo */}
+          <div className="text-center">
+            <h4 className="font-semibold mb-2">Main Photo</h4>
+            {formData.main_photo_url ? (
+              <img
+                src={`${BASE_URL}/uploads/${formData.main_photo_url.replace(/\\/g, "/")}`}
+                alt="Main"
+                className="w-full h-[180px] object-contain border rounded shadow"
+              />
+            ) : (
+              <p className="text-sm text-gray-500 mb-2">No main photo uploaded.</p>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleFileChange(e, setMainPhoto)}
+              className="mt-2"
+            />
+            <button
+              type="button"
+              onClick={() => handlePhotoUpload("main")}
+              className="mt-2 bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
+            >
+              Update Main Photo
+            </button>
+          </div>
+
+          {/* 🔷 Side Photo */}
+          <div className="text-center">
+            <h4 className="font-semibold mb-2">Side Photo</h4>
+            {formData.side_photo_url ? (
+              <img
+                src={`${BASE_URL}/uploads/${formData.side_photo_url.replace(/\\/g, "/")}`}
+                alt="Side"
+                className="w-full h-[180px] object-contain border rounded shadow"
+              />
+            ) : (
+              <p className="text-sm text-gray-500 mb-2">No side photo uploaded.</p>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleFileChange(e, setSidePhoto)}
+              className="mt-2"
+            />
+            <button
+              type="button"
+              onClick={() => handlePhotoUpload("side")}
+              className="mt-2 bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
+            >
+              Update Side Photo
+            </button>
+          </div>
+        </div>
+
+        {/* ✅ Action Buttons */}
         <div className="mt-6 flex justify-end gap-3">
           <button
             className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"

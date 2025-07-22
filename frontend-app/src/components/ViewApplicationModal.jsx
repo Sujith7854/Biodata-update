@@ -31,8 +31,8 @@ const ViewApplicationModal = ({ application, onClose, onApprove, onReject }) => 
     mothers_father_name,
     siblings,
     email_id,
-    contact_no1,
-    contact_no2,
+    main_contact_number,
+    alternative_contact_number,
     main_photo_url,
     side_photo_url,
     submitted_at,
@@ -119,8 +119,8 @@ const ViewApplicationModal = ({ application, onClose, onApprove, onReject }) => 
           <div className="space-y-4">
             <div>
               <p><strong>Email:</strong> {email_id}</p>
-              <p><strong>Contact No 1:</strong> {contact_no1}</p>
-              <p><strong>Contact No 2:</strong> {contact_no2}</p>
+              <p><strong>Main Contact Number:</strong> {main_contact_number}</p>
+              <p><strong>Alternative Contact Number:</strong> {alternative_contact_number}</p>
               <p><strong>Designation:</strong> {designation}</p>
               <p><strong>Company:</strong> {company}</p>
             </div>

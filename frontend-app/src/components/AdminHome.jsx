@@ -27,6 +27,21 @@ const AdminHome = () => {
         >
           Manage Access Requests
         </button>
+
+        <button
+          onClick={() => navigate("/admin-dashboard/upload-csv")}
+          className="bg-purple-600 text-white px-6 py-4 rounded-lg shadow hover:bg-purple-700"
+        >
+          Add Bulk Data
+        </button>
+
+        {/* ✅ New Rejected Applications Button */}
+        <button
+          onClick={() => navigate("/admin-dashboard/rejected-applications")}
+          className="bg-red-500 text-white px-6 py-4 rounded-lg shadow hover:bg-red-600"
+        >
+          Rejected Applications
+        </button>
       </div>
 
       <button

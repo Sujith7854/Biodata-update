@@ -13,12 +13,15 @@ const BrowseByYear = () => {
   const [selectedApplication, setSelectedApplication] = useState(null);
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/applications/by-year/${year}`)
+  if (gender && year) {
+    fetch(`${BASE_URL}/api/applications/by-year/${year}?gender=${gender}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setApplications(data.applications);
       });
-  }, [year]);
+  }
+}, [year, gender]);
+
 
   useEffect(() => {
     if (id && applications.length > 0) {
@@ -91,7 +94,7 @@ const BrowseByYear = () => {
               </div>
               <div>
                 <p><strong>Email:</strong> {app.email_id}</p>
-                <p><strong>Contact:</strong> {app.contact_no1}</p>
+                <p><strong>Main Contact Number:</strong> {app.main_contact_number}</p>
                 <p><strong>Designation:</strong> {app.designation}</p>
                 <p><strong>Company:</strong> {app.company}</p>
                 <p><strong>Current Living:</strong> {app.current_living}</p>

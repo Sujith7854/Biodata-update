@@ -27,8 +27,8 @@ const BiodataForm = () => {
     mothers_father_name: "",
     siblings: "",
     email_id: "",
-    contact_no1: "",
-    contact_no2: "",
+    main_contact_number: "",
+    alternative_contact_number: "",
     main_photo_base64: "",
     side_photo_base64: "",
   });
@@ -108,7 +108,7 @@ const BiodataForm = () => {
     "birth_star", "zodiac_sign", "gothram", "current_living", "educational_details",
     "designation", "company", "previous_work_experience",
     "fathers_name", "fathers_father_name", "mothers_name", "mothers_father_name",
-    "siblings", "email_id", "contact_no1", "contact_no2",
+    "siblings", "email_id", "main_contact_number", "alternative_contact_number",
   ];
 
   return (

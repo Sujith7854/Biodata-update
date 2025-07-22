@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AdminAccessRequests = () => {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [editedUser, setEditedUser] = useState({});
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  const navigate = useNavigate();
 
   const fetchVerifiedUsers = async () => {
     try {
@@ -44,19 +47,29 @@ const AdminAccessRequests = () => {
 
   return (
     <div className="p-6 min-h-screen bg-gray-50">
+      {/* 🔲 Header with Back and Logout */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Verified Users</h2>
-        <button
-          onClick={() => {
-            localStorage.removeItem("admin_token");
-            window.location.href = "/admin-login";
-          }}
-          className="bg-red-600 text-white px-4 py-2 rounded"
-        >
-          Logout
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => navigate("/admin-dashboard")}
+            className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded"
+          >
+            Back
+          </button>
+          <button
+            onClick={() => {
+              localStorage.removeItem("admin_token");
+              window.location.href = "/admin-login";
+            }}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
+      {/* 🔳 Verified Users Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border rounded shadow">
           <thead className="bg-gray-100">

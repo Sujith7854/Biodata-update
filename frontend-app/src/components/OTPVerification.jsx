@@ -39,6 +39,7 @@ const OTPVerification = () => {
 
       if (data?.success) {
         localStorage.setItem("is_verified", "true");
+        localStorage.setItem("main_contact_number", phone_number);
         alert("OTP verified! You can now browse applications.");
         navigate("/home");
       } else {

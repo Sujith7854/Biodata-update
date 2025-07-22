@@ -57,8 +57,8 @@ const ApplicationModal = ({ application, onClose }) => {
             <p><strong>Mother's Father Name:</strong> {application.mothers_father_name}</p>
             <p><strong>Siblings:</strong> {application.siblings}</p>
             <p><strong>Email:</strong> {application.email_id}</p>
-            <p><strong>Contact 1:</strong> {application.contact_no1}</p>
-            <p><strong>Contact 2:</strong> {application.contact_no2}</p>
+            <p><strong>Main Contact Number:</strong> {application.main_contact_number}</p>
+            <p><strong>Alternative Contact Number:</strong> {application.alternative_contact_number}</p>
             <p><strong>Submitted:</strong> {application.created_at?.slice(0, 10)}</p>
             <p><strong>Approved:</strong> {application.approved_at?.slice(0, 10)}</p>
           </div>

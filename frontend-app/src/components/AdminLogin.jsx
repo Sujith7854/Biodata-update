@@ -22,10 +22,8 @@ const AdminLogin = () => {
       });
 
       const data = await response.json();
-      console.log("Login response:", data); // ✅ Debug
-
       if (data.success) {
-        navigate("/admin-dashboard"); // ✅ Make sure this route is defined in App.jsx
+        navigate("/admin-dashboard");
       } else {
         setError("Invalid credentials");
       }
@@ -81,6 +79,16 @@ const AdminLogin = () => {
             Login
           </button>
         </form>
+
+        {/* 🔙 Back to Registration */}
+        <div className="text-center mt-6">
+          <button
+            onClick={() => navigate("/")}
+            className="text-blue-600 text-sm underline"
+          >
+            ← Back to Registration
+          </button>
+        </div>
       </div>
     </div>
   );

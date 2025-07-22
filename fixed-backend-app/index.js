@@ -1,25 +1,23 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const app = express();
 
 // Increase JSON and URL-encoded body size limit
-app.use(express.json({ limit: "10mb" })); // 🔼 JSON payload limit
-app.use(express.urlencoded({ extended: true, limit: "10mb" })); // 🔼 for form-data (non-file)
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Whitelist of allowed origins
 const whitelist = [
-  "http://localhost:5173", // Local development
-  "https://tkkv.netlify.app", // Replace with your actual Netlify domain
-  "https://www.yourcustomdomain.com", // Optional: if you use a custom domain
+  "http://localhost:5173",             // Local development
+  "https://tkkv.netlify.app",         // Deployed Netlify app
+  "https://www.yourcustomdomain.com"  // Optional custom domain
 ];
 
 // Dynamic CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like Postman or curl)
-    if (!origin) return callback(null, true);
-
-    if (whitelist.includes(origin)) {
+    if (!origin || whitelist.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS: " + origin));
@@ -27,12 +25,12 @@ const corsOptions = {
   },
   credentials: true,
 };
-
 app.use(cors(corsOptions));
-app.use(express.json());
-app.use("/uploads", express.static("uploads"));
 
-// Routes
+// ✅ Serve uploaded images publicly
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// ─────────────── Routes ───────────────
 const applicationRoutes = require("./routes/application");
 const adminAuthRoutes = require("./routes/adminAuth");
 const adminRoutes = require("./routes/admin");
@@ -45,8 +43,8 @@ app.use("/api/admin/auth", adminAuthRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin/actions", adminActionsRoutes);
 
-const PORT = process.env.PORT || 5050; // ✅ Let Render assign it
-
+// ─────────────── Start Server ───────────────
+const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });

@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import EditApplicationModal from "./EditApplicationModal";
 import ViewApplicationModal from "./ViewApplicationModal";
-
+import { toast } from "react-toastify";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 
 const AdminApplications = () => {
   const [applications, setApplications] = useState([]);
   const [editingApplication, setEditingApplication] = useState(null);
   const [viewingApplication, setViewingApplication] = useState(null);
+
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const [rejectionNote, setRejectionNote] = useState("");
+
+  const navigate = useNavigate();
 
   const fetchApplications = async () => {
     try {
@@ -32,20 +39,29 @@ const AdminApplications = () => {
     window.location.href = "/admin-login";
   };
 
+  const openRejectModal = (id) => {
+    setSelectedId(id);
+    setShowRejectModal(true);
+  };
+
+  const handleReject = async () => {
+    try {
+      await axios.post(`${BASE_URL}/api/admin/reject/${selectedId}`, {
+        rejection_note: rejectionNote,
+      });
+      toast.success("Application rejected with note");
+      setShowRejectModal(false);
+      fetchApplications();
+    } catch (err) {
+      toast.error("Rejection failed");
+    }
+  };
+
   const handleApprove = async (unique_id) => {
     await fetch(`${BASE_URL}/api/admin/approve/${unique_id}`, {
       method: "POST",
     });
     await logAdminAction("approve", unique_id);
-    fetchApplications();
-    setViewingApplication(null);
-  };
-
-  const handleReject = async (unique_id) => {
-    await fetch(`${BASE_URL}/api/admin/reject/${unique_id}`, {
-      method: "POST",
-    });
-    await logAdminAction("reject", unique_id);
     fetchApplications();
     setViewingApplication(null);
   };
@@ -109,12 +125,20 @@ const AdminApplications = () => {
     <div className="p-6 min-h-screen bg-gray-50">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">All Applications</h2>
-        <button
-          onClick={handleLogout}
-          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-        >
-          Logout
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => navigate("/admin-dashboard")}
+            className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded"
+          >
+            Back
+          </button>
+          <button
+            onClick={handleLogout}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -154,12 +178,20 @@ const AdminApplications = () => {
                       </button>
                     </>
                   ) : (
-                    <button
-                      className="bg-blue-600 text-white px-3 py-1 rounded"
-                      onClick={() => setViewingApplication(app)}
-                    >
-                      View
-                    </button>
+                    <>
+                      <button
+                        className="bg-blue-600 text-white px-3 py-1 rounded"
+                        onClick={() => setViewingApplication(app)}
+                      >
+                        View
+                      </button>
+                      <button
+                        className="bg-red-500 text-white px-3 py-1 rounded"
+                        onClick={() => openRejectModal(app.unique_id)}
+                      >
+                        Reject
+                      </button>
+                    </>
                   )}
                 </td>
               </tr>
@@ -181,8 +213,27 @@ const AdminApplications = () => {
           application={viewingApplication}
           onClose={() => setViewingApplication(null)}
           onApprove={handleApprove}
-          onReject={handleReject}
+          onReject={openRejectModal}
         />
+      )}
+
+      {showRejectModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg p-6 w-[90%] max-w-lg">
+            <h2 className="text-xl font-semibold mb-3">Reason for Rejection</h2>
+            <textarea
+              className="w-full border rounded p-2 text-sm"
+              placeholder="Write reason to help applicant update..."
+              rows={4}
+              value={rejectionNote}
+              onChange={(e) => setRejectionNote(e.target.value)}
+            />
+            <div className="mt-4 flex justify-end gap-3">
+              <button onClick={() => setShowRejectModal(false)} className="bg-gray-500 text-white px-4 py-1 rounded">Cancel</button>
+              <button onClick={handleReject} className="bg-red-600 text-white px-4 py-1 rounded">Reject</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
