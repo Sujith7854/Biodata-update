@@ -70,6 +70,38 @@ CREATE TABLE `visitors` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE `rejected_applications` (
+  `id` int(11) NOT NULL,
+  `unique_id` varchar(10) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `gender` varchar(20) DEFAULT NULL,
+  `date_of_birth` date DEFAULT NULL,
+  `time_of_birth` varchar(10) DEFAULT NULL,
+  `place_of_birth` varchar(100) DEFAULT NULL,
+  `height` varchar(20) DEFAULT NULL,
+  `birth_star` varchar(50) DEFAULT NULL,
+  `zodiac_sign` varchar(50) DEFAULT NULL,
+  `gothram` varchar(100) DEFAULT NULL,
+  `current_living` varchar(100) DEFAULT NULL,
+  `educational_details` varchar(200) DEFAULT NULL,
+  `designation` varchar(100) DEFAULT NULL,
+  `company` varchar(100) DEFAULT NULL,
+  `previous_work_experience` text DEFAULT NULL,
+  `fathers_name` varchar(100) DEFAULT NULL,
+  `fathers_father_name` varchar(100) DEFAULT NULL,
+  `mothers_name` varchar(100) DEFAULT NULL,
+  `mothers_father_name` varchar(100) DEFAULT NULL,
+  `siblings` text DEFAULT NULL,
+  `email_id` varchar(100) DEFAULT NULL,
+  `main_contact_number` varchar(20) DEFAULT NULL,
+  `alternative_contact_number` varchar(20) DEFAULT NULL,
+  `main_photo_url` varchar(255) DEFAULT NULL,
+  `side_photo_url` varchar(255) DEFAULT NULL,
+  `rejected_at` datetime DEFAULT current_timestamp(),
+  `rejection_note` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 
 --
 -- Indexes for table `access_requests`
